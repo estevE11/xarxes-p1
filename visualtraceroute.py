@@ -2,7 +2,7 @@ import socket
 import time
 import ipinfo
 import matplotlib.pyplot as plt
-from scapy import *
+from scapy.all import *
 
 
 def get_ip_info():
@@ -11,3 +11,7 @@ def get_ip_info():
     details = handler.getDetails()
     return details
 
+def traceroute(dest_name) :
+    Conf.route.add(net="0.0.0.0/0", dev="ens33")
+
+    dest_addr = socket.gethostbyname(dest_name)
