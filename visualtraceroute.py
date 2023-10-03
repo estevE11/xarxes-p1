@@ -3,6 +3,7 @@ import time
 import ipinfo
 import matplotlib.pyplot as plt
 from scapy.all import Conf, IP, ICMP, sr1
+from mpl_toolkits.basemap import Basemap
 
 
 def get_ip_info(ip):
@@ -18,6 +19,8 @@ def traceroute(dest_addr) :
     max_ttl = 30
     ttl = 1
 
+    positions = []
+
     while ttl < max_ttl:
         time_sent = time.time()
 
@@ -32,7 +35,10 @@ def traceroute(dest_addr) :
             ip = response.src
             #esto lo usaremos luego cuando decubramos como dibujar con el mapa
             ip_details = get_ip_info(ip)
-            
+
+            if("loc" in ip_details): 
+                positions.append(parse_position(ip_details['loc']))
+
             print_ip_details(ip_details, ttl, rtt_ms)
             
             if response.src == dest_addr:
@@ -41,12 +47,43 @@ def traceroute(dest_addr) :
             print(f"* * * * * *")
         ttl += 1
 
+    drawmap(positions)
+
+def parse_position(pos_str):
+    spl = pos_str.split(",")
+    return float(spl[0]), float(spl[1])
+
 def print_ip_details(ip_details, ttl, ms):
     print(f"{ttl}. {ip_details['ip']} {ms:.0f}ms   ", end="")
     if "hostname" in ip_details:
         print(ip_details["hostname"])
     else:
         print("*")
+
+def drawmap(positions):
+    print(positions)
+    # create new figure, axes instances.
+    fig=plt.figure()
+    ax=fig.add_axes([0.1,0.1,0.8,0.8])
+    
+    # los primeros 4 son para el zoom
+    m = Basemap(llcrnrlon=-10.,llcrnrlat=20.,urcrnrlon=20.,urcrnrlat=60.,\
+                rsphere=(6378137.00,6356752.3142),\
+                resolution='l',projection='merc',\
+                lat_ts=20.)
+    
+    for i in range(len(positions)-2):
+        curr = positions[i]
+        next = positions[i+1]
+        if curr == next:
+            continue
+        m.drawgreatcircle(curr[1],curr[0],next[1],next[0],linewidth=2,color='b')
+
+
+    m.drawcoastlines()
+    m.fillcontinents()
+    ax.set_title('Hay q poner titulo?')
+    plt.show()
 
 if __name__ == "__main__":
     #traceroute("www.google.com")
