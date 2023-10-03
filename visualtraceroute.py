@@ -67,7 +67,7 @@ def drawmap(positions):
     ax=fig.add_axes([0.1,0.1,0.8,0.8])
     
     # los primeros 4 son para el zoom
-    m = Basemap(llcrnrlon=-10.,llcrnrlat=20.,urcrnrlon=20.,urcrnrlat=60.,\
+    m = Basemap(llcrnrlon=-130.,llcrnrlat=0.,urcrnrlon=20.,urcrnrlat=60.,\
                 rsphere=(6378137.00,6356752.3142),\
                 resolution='l',projection='merc',\
                 lat_ts=20.)
@@ -87,4 +87,5 @@ def drawmap(positions):
 
 if __name__ == "__main__":
     #traceroute("www.google.com")
-    traceroute("142.250.184.174")
+    #traceroute("142.250.184.174")
+    traceroute("154.54.42.102")
