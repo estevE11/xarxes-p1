@@ -12,17 +12,17 @@ def get_ip_info(ip):
     return details
 
 def traceroute(dest_addr) :
-    Conf.route.add(net="0.0.0.0/0", dev="ens33")
+    #Conf.route.add(net="0.0.0.0/0", dev="ens33")
 
     dest_name = socket.gethostbyaddr(dest_addr)
     max_ttl = 30
     ttl = 1
 
-    while True:
+    while ttl < max_ttl:
         time_sent = time.time()
 
         package_icmp = IP(dst=dest_addr,ttl=ttl) / ICMP()
-        response = sr1(package_icmp,verbose=False)
+        response = sr1(package_icmp, verbose=False, timeout=2)
 
         time_received = time.time()
 
@@ -33,9 +33,15 @@ def traceroute(dest_addr) :
             #esto lo usaremos luego cuando decubramos como dibujar con el mapa
             details_ip = get_ip_info(ip)
             
-            print(f"RTT al host='{dest_name}' ({ip}) es de {rtt_mls:.2f} ms")
+            print(f"{ttl}. {ip} {rtt_mls:.2f} ms")
             
             if response.src == dest_addr:
                 break
         else:
             print(f"* * * * * *")
+        ttl += 1
+
+
+if __name__ == "__main__":
+    #traceroute("www.google.com")
+    traceroute("142.250.184.174")
