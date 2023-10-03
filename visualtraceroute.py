@@ -9,7 +9,7 @@ def get_ip_info(ip):
     access_token = '92ea3b28d5471d'
     handler = ipinfo.getHandler(access_token)
     details = handler.getDetails(ip)
-    return details
+    return details.details
 
 def traceroute(dest_addr) :
     #Conf.route.add(net="0.0.0.0/0", dev="ens33")
@@ -26,14 +26,14 @@ def traceroute(dest_addr) :
 
         time_received = time.time()
 
-        rtt_mls = (time_received - time_sent) * 1000
+        rtt_ms = (time_received - time_sent) * 1000
 
         if response:
             ip = response.src
             #esto lo usaremos luego cuando decubramos como dibujar con el mapa
-            details_ip = get_ip_info(ip)
+            ip_details = get_ip_info(ip)
             
-            print(f"{ttl}. {ip} {rtt_mls:.2f} ms")
+            print_ip_details(ip_details, ttl, rtt_ms)
             
             if response.src == dest_addr:
                 break
@@ -41,6 +41,12 @@ def traceroute(dest_addr) :
             print(f"* * * * * *")
         ttl += 1
 
+def print_ip_details(ip_details, ttl, ms):
+    print(f"{ttl}. {ip_details['ip']} {ms:.0f}ms   ", end="")
+    if "hostname" in ip_details:
+        print(ip_details["hostname"])
+    else:
+        print("*")
 
 if __name__ == "__main__":
     #traceroute("www.google.com")
