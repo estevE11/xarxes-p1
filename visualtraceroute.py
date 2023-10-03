@@ -47,6 +47,8 @@ def traceroute(dest_addr) :
             print(f"* * * * * *")
         ttl += 1
 
+    print("Hem arribat al destí") 
+
     drawmap(positions)
 
 def parse_position(pos_str):
@@ -54,14 +56,14 @@ def parse_position(pos_str):
     return float(spl[0]), float(spl[1])
 
 def print_ip_details(ip_details, ttl, ms):
-    print(f"{ttl}. {ip_details['ip']} {ms:.0f}ms   ", end="")
+    print(f"RTT al host='", end="")
     if "hostname" in ip_details:
-        print(ip_details["hostname"])
+        print(ip_details["hostname"], end="")
     else:
-        print("*")
+        print("*", end="")
+    print(f"' ({ip_details['ip']}) es de {ms:.0f} ms ")
 
 def drawmap(positions):
-    print(positions)
     # create new figure, axes instances.
     fig=plt.figure()
     ax=fig.add_axes([0.1,0.1,0.8,0.8])
