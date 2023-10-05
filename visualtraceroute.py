@@ -91,3 +91,5 @@ if __name__ == "__main__":
     #traceroute("www.google.com")
     #traceroute("142.250.184.174")
     traceroute("154.54.42.102")
+    #traceroute("8.8.8.8")
+
