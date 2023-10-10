@@ -2,6 +2,7 @@ import socket
 import time
 import ipinfo
 import matplotlib.pyplot as plt
+import requests
 from scapy.all import Conf, IP, ICMP, sr1
 from mpl_toolkits.basemap import Basemap
 
@@ -12,6 +13,36 @@ def get_ip_info(ip):
     details = handler.getDetails(ip)
     return details.details
 
+def is_ip_public(ip):
+    # Lista de rangos de direcciones IP públicas
+    public_ip_ranges = [
+        ("10.0.0.0", "10.255.255.255"),
+        ("172.16.0.0", "172.31.255.255"),
+        ("192.168.0.0", "192.168.255.255"),
+        ("169.254.0.0", "169.254.255.255"),
+        ("1.0.0.0", "126.255.255.255"),
+        ("128.0.0.0", "191.255.255.255"),
+        ("192.0.0.0", "223.255.255.255")
+    ]
+    
+    # Verificar si la IP está en un rango de IP pública
+    ip_num = int(ip.replace(".", ""))
+    for start_range, end_range in public_ip_ranges:
+        if ip_num >= int(start_range.replace(".", "")) and ip_num <= int(end_range.replace(".", "")):
+            return True
+    return False
+
+def get_status_ip(direccion_ip):
+    try:
+        url = f"https://ipinfo.io/{direccion_ip}/json"
+        response = requests.get(url)
+        if response.status_code == 200:
+            data = response.json()
+            return "OK"
+    except Exception as e:
+        return "Error"
+    return "Error"
+
 def traceroute(dest_addr) :
     #Conf.route.add(net="0.0.0.0/0", dev="ens33")
 
@@ -19,6 +50,7 @@ def traceroute(dest_addr) :
     max_ttl = 30
     ttl = 1
 
+    ips = []
     positions = []
 
     while ttl < max_ttl:
@@ -33,6 +65,7 @@ def traceroute(dest_addr) :
 
         if response:
             ip = response.src
+            ips.append(ip)
             #esto lo usaremos luego cuando decubramos como dibujar con el mapa
             ip_details = get_ip_info(ip)
 
@@ -49,7 +82,16 @@ def traceroute(dest_addr) :
 
     print("Hem arribat al destí") 
 
-    drawmap(positions)
+    for ip in ips:
+        status = get_status_ip(ip)
+        if is_ip_public(ip):
+            print(f"Parsejant l'adreça IP {ip} ... {status}!")
+        else:
+            print(f"Parsejant l'adreça IP {ip} ... {status}!", end="")
+            print(f"Parsejant l'adreça IP {ip} ... no es publica!", end="")
+
+
+    #drawmap(positions)
 
 def parse_position(pos_str):
     spl = pos_str.split(",")
