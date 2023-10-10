@@ -52,12 +52,12 @@ def traceroute(dest_addr) :
 
     ips = []
     positions = []
-
+    
     while ttl < max_ttl:
         time_sent = time.time()
 
         package_icmp = IP(dst=dest_addr,ttl=ttl) / ICMP()
-        response = sr1(package_icmp, verbose=False, timeout=2)
+        response = sr1(package_icmp, verbose=False, timeout=1)
 
         time_received = time.time()
 
@@ -79,16 +79,19 @@ def traceroute(dest_addr) :
         else:
             print(f"* * * * * *")
         ttl += 1
-
-    print("Hem arribat al destí") 
-
-    for ip in ips:
-        status = get_status_ip(ip)
-        if is_ip_public(ip):
-            print(f"Parsejant l'adreça IP {ip} ... {status}!")
-        else:
-            print(f"Parsejant l'adreça IP {ip} ... {status}!", end="")
-            print(f"Parsejant l'adreça IP {ip} ... no es publica!", end="")
+        
+    if dest_addr == ips[-1]:
+        print("Hem arribat al destí")
+        for ip in ips:
+            if is_ip_public(ip):
+                print(f"Parsejant l'adreça IP {ip} ... {get_status_ip(ip)}!")
+            else:
+                print(f"Parsejant l'adreça IP {ip} ... {get_status_ip(ip)}!", end="")
+                print(f"Parsejant l'adreça IP {ip} ... no es publica!", end="")
+    else:
+        print("No hem arribat al destí")
+    
+    
 
 
     #drawmap(positions)
@@ -130,8 +133,8 @@ def drawmap(positions):
     plt.show()
 
 if __name__ == "__main__":
-    #traceroute("www.google.com")
+    
     #traceroute("142.250.184.174")
-    traceroute("154.54.42.102")
-    #traceroute("8.8.8.8")
+    #traceroute("154.54.42.102")
+    traceroute("8.8.8.8")
 
