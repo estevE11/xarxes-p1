@@ -115,10 +115,19 @@ def drawmap(positions):
     ax=fig.add_axes([0.1,0.1,0.8,0.8])
     
     # los primeros 4 son para el zoom
-    LONMIN = -180
-    LONMAX = 180
-    LATMIN = -80
-    LATMAX = 80
+
+    max_lon = max(pos[1] for pos in positions)
+    min_lon = min(pos[1] for pos in positions)
+    max_lat = max(pos[0] for pos in positions)
+    min_lat = min(pos[0] for pos in positions)
+
+    off = 10
+
+    LONMIN = max(-180, min_lon - off)
+    LONMAX = min(180, max_lon + off)
+    LATMIN = max(-90, min_lat - off)
+    LATMAX = min(90, max_lat + off + 10)
+
     m = Basemap(llcrnrlon=LONMIN,llcrnrlat=LATMIN,urcrnrlon=LONMAX,urcrnrlat=LATMAX,\
                 rsphere=(6378137.00,6356752.3142),\
                 resolution='l',projection='cyl',\
@@ -136,7 +145,7 @@ def drawmap(positions):
             m.drawgreatcircle(curr[1],curr[0],next[1],next[0],linewidth=2,color='b')
 
         x, y = m(curr[1], curr[0])
-        circle = Circle((x, y), 0.2, color='red', fill=True, linewidth=2)
+        circle = Circle((x, y), 0.3, color='red', fill=True, linewidth=2)
 
         ax.add_patch(circle)
 
@@ -148,4 +157,5 @@ if __name__ == "__main__":
     #traceroute("142.250.184.174")
     #traceroute("154.54.42.102")
     traceroute("8.8.8.8")
+    #traceroute("92.57.40.154")
 
