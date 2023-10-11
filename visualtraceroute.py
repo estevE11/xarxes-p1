@@ -5,6 +5,7 @@ import matplotlib.pyplot as plt
 import requests
 from scapy.all import Conf, IP, ICMP, sr1
 from mpl_toolkits.basemap import Basemap
+from matplotlib.patches import Circle
 
 
 def get_ip_info(ip):
@@ -94,7 +95,7 @@ def traceroute(dest_addr) :
     
 
 
-    #drawmap(positions)
+    drawmap(positions)
 
 def parse_position(pos_str):
     spl = pos_str.split(",")
@@ -114,21 +115,31 @@ def drawmap(positions):
     ax=fig.add_axes([0.1,0.1,0.8,0.8])
     
     # los primeros 4 son para el zoom
-    m = Basemap(llcrnrlon=-130.,llcrnrlat=0.,urcrnrlon=20.,urcrnrlat=60.,\
+    LONMIN = -180
+    LONMAX = 180
+    LATMIN = -80
+    LATMAX = 80
+    m = Basemap(llcrnrlon=LONMIN,llcrnrlat=LATMIN,urcrnrlon=LONMAX,urcrnrlat=LATMAX,\
                 rsphere=(6378137.00,6356752.3142),\
-                resolution='l',projection='merc',\
+                resolution='l',projection='cyl',\
                 lat_ts=20.)
-    
-    for i in range(len(positions)-2):
-        curr = positions[i]
-        next = positions[i+1]
-        if curr == next:
-            continue
-        m.drawgreatcircle(curr[1],curr[0],next[1],next[0],linewidth=2,color='b')
-
 
     m.drawcoastlines()
     m.fillcontinents()
+    
+    for i in range(len(positions)):
+        curr = positions[i]
+        if i < len(positions)-1:
+            next = positions[i+1]
+            if curr == next:
+                continue
+            m.drawgreatcircle(curr[1],curr[0],next[1],next[0],linewidth=2,color='b')
+
+        x, y = m(curr[1], curr[0])
+        circle = Circle((x, y), 0.2, color='red', fill=True, linewidth=2)
+
+        ax.add_patch(circle)
+
     ax.set_title('Hay q poner titulo?')
     plt.show()
 
