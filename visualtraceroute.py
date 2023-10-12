@@ -1,3 +1,4 @@
+import argparse
 import socket
 import time
 import ipinfo
@@ -153,9 +154,22 @@ def calculate_crop(positions, off=10):
     return LONMIN, LONMAX, LATMIN, LATMAX
 
 if __name__ == "__main__":
+    parser = argparse.ArgumentParser(description="traceroute")
     
+    parser.add_argument("--ip_address", "-ip", help="Destination to trace the route to")
+
+    args = parser.parse_args()
+
+    if "ip_addres" in args:
+        traceroute(args.ip_address)
+    else:
+        traceroute("154.54.42.102")
+
+
     #traceroute("142.250.184.174")
-    traceroute("154.54.42.102")
     #traceroute("8.8.8.8")
     #traceroute("92.57.40.154")
+
+
+
 
