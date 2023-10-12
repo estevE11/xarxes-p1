@@ -160,8 +160,10 @@ if __name__ == "__main__":
 
     args = parser.parse_args()
 
-    if "ip_addres" in args:
-        traceroute(args.ip_address)
+
+    ip = args.ip_address
+    if ip:
+        traceroute(ip)
     else:
         traceroute("154.54.42.102")
 
