@@ -137,7 +137,6 @@ def drawmap(positions):
 
         ax.add_patch(circle)
 
-    ax.set_title('Hay q poner titulo?')
     plt.show()
 
 def calculate_crop(positions, off=10): 
@@ -156,7 +155,7 @@ def calculate_crop(positions, off=10):
 if __name__ == "__main__":
     
     #traceroute("142.250.184.174")
-    #traceroute("154.54.42.102")
-    traceroute("8.8.8.8")
+    traceroute("154.54.42.102")
+    #traceroute("8.8.8.8")
     #traceroute("92.57.40.154")
 
