@@ -131,7 +131,11 @@ def drawmap(positions):
             next = positions[i+1]
             if curr == next:
                 continue
-            m.drawgreatcircle(curr[1],curr[0],next[1],next[0],linewidth=2,color='b')
+            print(curr[1],curr[0],next[1],next[0])
+            try:
+                m.drawgreatcircle(curr[1],curr[0],next[1],next[0],linewidth=2,color='b')
+            except:
+                print('error drawing line')
 
         x, y = m(curr[1], curr[0])
         circle = Circle((x, y), 0.3, color='red', fill=True, linewidth=2)
