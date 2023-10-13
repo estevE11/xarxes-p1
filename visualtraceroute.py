@@ -22,9 +22,6 @@ def is_ip_public(ip):
         ("172.16.0.0", "172.31.255.255"),
         ("192.168.0.0", "192.168.255.255"),
         ("169.254.0.0", "169.254.255.255"),
-        #("1.0.0.0", "126.255.255.255"),
-        #("128.0.0.0", "191.255.255.255"),
-        #("192.0.0.0", "223.255.255.255")
     ]
     
     # Verificar si la IP está en un rango de IP pública
@@ -46,7 +43,6 @@ def get_status_ip(direccion_ip):
     return "Error"
 
 def traceroute(dest_addr) :
-    #Conf.route.add(net="0.0.0.0/0", dev="ens33")
 
     dest_name = socket.gethostbyaddr(dest_addr)
     max_ttl = 30
