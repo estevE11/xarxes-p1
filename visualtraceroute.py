@@ -155,8 +155,13 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="traceroute")
     
     parser.add_argument("--ip_address", "-d", help="Destination to trace the route to")
+    #parser.add_argument("--interface", "-i", help="Network interface to use for sending packets")
+
 
     args = parser.parse_args()
+
+    #if args.interface:
+        #Conf.route.add(net="0.0.0.0/0", dev=args.interface)
 
 
     ip = args.ip_address
