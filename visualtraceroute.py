@@ -89,8 +89,6 @@ def traceroute(dest_addr) :
     else:
         print("No hem arribat al destí")
     
-    
-
 
     drawmap(positions)
 
@@ -156,7 +154,7 @@ def calculate_crop(positions, off=10):
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="traceroute")
     
-    parser.add_argument("--ip_address", "-ip", help="Destination to trace the route to")
+    parser.add_argument("--ip_address", "-d", help="Destination to trace the route to")
 
     args = parser.parse_args()
 
