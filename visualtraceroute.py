@@ -43,16 +43,22 @@ def get_status_ip(direccion_ip):
     return "Error"
 
 def traceroute(dest_addr, interface) :
+    # Establim el límit màxim de TTL
     max_ttl = 30
     ttl = 1
 
+    # Llistes per emmagatzemar les adreces IP i les seves coordenades   
     ips = []
     positions = []
     
+    # Iterem fins al límit de TTL
     while ttl < max_ttl:
         time_sent = time.time()
 
+        # Creem un paquet ICMP amb el TTL actual
         package_icmp = IP(dst=dest_addr,ttl=ttl) / ICMP()
+
+        # Enviem el paquet i esperem una resposta
         response = {}
         if interface != "":
             response = sr1(package_icmp, iface=interface, verbose=False, timeout=1)
@@ -61,37 +67,46 @@ def traceroute(dest_addr, interface) :
 
         time_received = time.time()
 
+        # Calculem el RTT del paquet
         rtt_ms = (time_received - time_sent) * 1000
 
+        # Si obtenim una resposta
         if response:
             ip = response.src
             ips.append(ip)
             #esto lo usaremos luego cuando decubramos como dibujar con el mapa
             ip_details = get_ip_info(ip)
 
+            # Si tenim informació de les coordenades de la IP, les afegim a la llista
             if("loc" in ip_details): 
                 positions.append(parse_position(ip_details['loc']))
 
+            # Mostrem els detalls de la IP i el RTT
             print_ip_details(ip_details, ttl, rtt_ms)
             
+            # Si la resposta és la destinació, acabem el traceroute
             if response.src == dest_addr:
                 break
         else:
-            print(f"* * * * * *")
+            # Si no obtenim resposta, mostrem asteriscos
+            print(f"* * * * * *")   
         ttl += 1
-        
+
+    # Comprovem si hem arribat a la destinació    
     if dest_addr == ips[-1]:
         print("Hem arribat al destí")
         for ip in ips:
+            # Mostrem el resultat de la geolocalització per cada IP
             if is_ip_public(ip):
                 print(f"Parsejant l'adreça IP {ip} ... {get_status_ip(ip)}!")
             else:
                 print(f"Parsejant l'adreça IP {ip} ... {get_status_ip(ip)}!", end="")
                 print(f"Parsejant l'adreça IP {ip} ... no es publica!", end="")
     else:
+        # Si no hem arribat a la destinació, mostrem un missatge d'error
         print("No hem arribat al destí")
     
-
+    # Dibuixem el mapa amb les coordenades obtingudes
     drawmap(positions)
 
 def parse_position(pos_str):
