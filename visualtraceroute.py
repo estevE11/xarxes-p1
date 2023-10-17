@@ -43,8 +43,6 @@ def get_status_ip(direccion_ip):
     return "Error"
 
 def traceroute(dest_addr, interface) :
-
-    dest_name = socket.gethostbyaddr(dest_addr)
     max_ttl = 30
     ttl = 1
 
