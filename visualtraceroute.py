@@ -184,21 +184,27 @@ def calculate_crop(positions, off=10):
     return LONMIN, LONMAX, LATMIN, LATMAX
 
 if __name__ == "__main__":
+    # Inicialitzem l'objecte ArgumentParser amb una descripció
     parser = argparse.ArgumentParser(description="traceroute")
     
+    # Afegim els arguments que podem rebre des de la línia de comandes
     parser.add_argument("--ip_address", "-d", help="Destination to trace the route to")
     parser.add_argument("--interface", "-i", help="Network interface to use for sending packets")
 
-
+    # Parsegem els arguments proporcionats
     args = parser.parse_args()
     
+    # Inicialitzem la interfície com una cadena buida
     interface = ""
 
+    # Comprovem si s'ha proporcionat una interfície i la guardem en la variable `interface`
     if args.interface:
         interface = args.interface
 
-
+    # Obtenim la adreça IP proporcionada per l'usuari
     ip = args.ip_address
+
+    # Comprovem si s'ha proporcionat una adreça IP, i si no, utilitzem una adreça IP per defecte
     if ip:
         traceroute(ip, interface)
     else:
