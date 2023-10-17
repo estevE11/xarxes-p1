@@ -42,7 +42,7 @@ def get_status_ip(direccion_ip):
         return "Error"
     return "Error"
 
-def traceroute(dest_addr) :
+def traceroute(dest_addr, interface) :
 
     dest_name = socket.gethostbyaddr(dest_addr)
     max_ttl = 30
@@ -55,7 +55,11 @@ def traceroute(dest_addr) :
         time_sent = time.time()
 
         package_icmp = IP(dst=dest_addr,ttl=ttl) / ICMP()
-        response = sr1(package_icmp, verbose=False, timeout=1)
+        response = {}
+        if interface != "":
+            response = sr1(package_icmp, iface=interface, verbose=False, timeout=1)
+        else:
+            response = sr1(package_icmp, verbose=False, timeout=1)
 
         time_received = time.time()
 
@@ -155,20 +159,22 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="traceroute")
     
     parser.add_argument("--ip_address", "-d", help="Destination to trace the route to")
-    #parser.add_argument("--interface", "-i", help="Network interface to use for sending packets")
+    parser.add_argument("--interface", "-i", help="Network interface to use for sending packets")
 
 
     args = parser.parse_args()
+    
+    interface = ""
 
-    #if args.interface:
-        #Conf.route.add(net="0.0.0.0/0", dev=args.interface)
+    if args.interface:
+        interface = args.interface
 
 
     ip = args.ip_address
     if ip:
-        traceroute(ip)
+        traceroute(ip, interface)
     else:
-        traceroute("154.54.42.102")
+        traceroute("154.54.42.102", interface)
 
 
     #traceroute("142.250.184.174")
