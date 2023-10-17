@@ -113,35 +113,50 @@ def drawmap(positions):
     fig=plt.figure()
     ax=fig.add_axes([0.1,0.1,0.8,0.8])
     
+    # Obtenim els valors maxims i minims de cada eix
     LONMIN, LONMAX, LATMIN, LATMAX = calculate_crop(positions)
 
+    # Creem el objecte Basemap amb amb els valors per retallar el mapa
     m = Basemap(llcrnrlon=LONMIN,llcrnrlat=LATMIN,urcrnrlon=LONMAX,urcrnrlat=LATMAX,\
                 rsphere=(6378137.00,6356752.3142),\
                 resolution='l',projection='cyl',\
                 lat_ts=20.)
 
-    m.drawcoastlines()
-    m.fillcontinents()
+    m.drawcoastlines() # Dibuixem els contorns dels paisos
+    m.fillcontinents() # Dibuixem el interior dels paisos
     
+    # Recorrem totes les posicions
     for i in range(len(positions)):
-        curr = positions[i]
+        curr = positions[i]  # Guardem la posició actual
+        # Com que en cada iteracio dibuixarem una linia de la posició actual al seguent
+        # hem de comprovar que el punt actual no sigui l'ultim, ja que l'ultima posició
+        # no te un seguent, per tant ens donaria error.
         if i < len(positions)-1:
-            next = positions[i+1]
+            next = positions[i+1] # Guardem la posició seguent
+            
+            # Comprovem que les dos posicions no siguin iguals, ja que al dibuixar
+            # una linia de una posició a la mateixa, la funció dona error
             if curr == next:
                 continue
-            print(curr[1],curr[0],next[1],next[0])
+
+            # Dibuixem la linia en el mapa amb les coordenades de les dos posicions
             try:
                 m.drawgreatcircle(curr[1],curr[0],next[1],next[0],linewidth=2,color='b')
             except:
                 print('error drawing line')
 
+        # Per dibuixar els cercles els dibuixarem sobre el grafic, no sobre el mapa
+        # Per tant passem les coordenades del mapa a coordenades del grafic.
         x, y = m(curr[1], curr[0])
-        circle = Circle((x, y), 0.3, color='red', fill=True, linewidth=2)
+        circle = Circle((x, y), 0.3, color='red', fill=True, linewidth=2) # Creem el cercle
 
+        # Dibixem el cercle
         ax.add_patch(circle)
 
-    plt.show()
+    plt.show() # Mostrem el grafic
 
+# Funcio per obtenir els valors maxims i minims per cada eix de coordenades
+# per tal de retallar l'imatge i enfocar millor el camí traçat
 def calculate_crop(positions, off=10): 
     max_lon = max(pos[1] for pos in positions)
     min_lon = min(pos[1] for pos in positions)
